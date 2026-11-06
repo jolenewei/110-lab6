@@ -210,30 +210,32 @@ I saved the change and tried playing the game again. When the game ended, it did
 
 ---
 
-## Ticket 5: "
+## Ticket 5: Leaderboard dates show "undefined""
 
 ### Actual cause
 
 <!-- Which file and function was the bug in, and what was wrong with the code?
      Explain why that code produced the behavior described in the ticket. -->
 
-**File / function:** `GameScreenView.ts`
+**File / function:** `ResultsScreenView.ts`, `updateLeaderboard()`, and the `LeaderboardEntry` type in `ResultsScreenModel.ts`.
 
-**What was wrong:** Math.round() was used around Math.random() in the function randomizeLemonPosition() in GameScreenView.ts and that made it so that the random value that was the multiplier would either round to 0 or 1.
+**What was wrong:** The frontend expected `timestamp`, but the server sent the date as `time`. Reading the missing property displayed "undefined."
 
 
 ### Fix
 
 <!-- What did you change, and why does that change fix the problem? -->
-I deleted the Math.round() function surrounding Math.random() in both constants randomX and randomY in the function randomizeLemonPosition(). 
+I changed the frontend to use `time` so it matched the server. 
 
 ### How did you find it?
 
-I guessed that there would be a click lemon event in GameScreenController and I found handleLemonClick() and in that function, I saw this.view.randomizeLemonPosition() being called. I then found that function in GameScreenView.ts, and looked at the code for how the random values were calculated, where Math.round() seemed unnecessary. 
+I followed the leaderboard data from the controller to the view, then compared the property used by the view with the one created by the server.
 
 #### Hypothesis testing
 
 **What hypothesis ultimately led you to identify the buggy code, and why?**
+
+I thought the date property might be missing or named differently. I checked the server code and found that it used `time`, while the frontend used `timestamp`.
 
 #### Backward tracing
 
@@ -257,4 +259,4 @@ Saw that Math.round() in the code would lead to only either 0 or 1 being multipl
 ### Confirming the fix
 
 <!-- How did you confirm the problem is gone? -->
-I tested it out and clicked on the lemon a few times, and the lemon was no longer showing up only on the edge of the screen. 
+I played a new game and checked the leaderboard. The date appeared instead of "undefined."

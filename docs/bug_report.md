@@ -1,9 +1,7 @@
 # Lemon Clicker Bug Report
 
-**Name:**
-**Tickets solved:** <!-- e.g. 1, 2, 3, 5, 6 (at least five) -->
-
-Copy the template below once for each ticket you solved. 
+**Name:** Jolene Wei
+**Tickets solved:** 1, 2, 3, 4, 5 <!-- e.g. 1, 2, 3, 5, 6 (at least five) -->
 
 ---
 
@@ -56,3 +54,52 @@ The fetch URL in `loadStatsFromServer()` was `/api/stat` instead of `/api/stats`
 
 <!-- How did you confirm the problem is gone? -->
 I saved the change and refreshed the game. The stats appeared with Average: 19.0 and Scores saved: 1.
+
+
+---
+
+## Ticket 2: Best Scores always shows 0"
+
+### Actual cause
+
+<!-- Which file and function was the bug in, and what was wrong with the code?
+     Explain why that code produced the behavior described in the ticket. -->
+
+**File / function:** `server/index.ts`
+
+**What was wrong:** The function was setting the score to the top score only when (entries[i].score < best), but that makes the best score always 0.
+
+### Fix
+
+<!-- What did you change, and why does that change fix the problem? -->
+I changed the condition to if (entries[i].score > best), then it will set the best equal to the score. That way, if a score is higher than what is currently set as best, then best will be updated to the new top score.
+
+### How did you find it?
+
+I searched for "Best:" and then read through the function for how the best score variable is calculated and noticed that the inequality was logically wrong.
+
+#### Hypothesis testing
+
+**What hypothesis ultimately led you to identify the buggy code, and why?**
+
+
+#### Backward tracing
+
+<!-- Start from the symptom you saw and work backwards, one step at a time,
+     until you reach the buggy line. For each step, note where you looked
+     and what you saw there. Add steps as needed. -->
+
+1. **Symptom:** <!-- what you saw, e.g. text on screen, console error -->
+The start screen showed best score as 0 when the last score was 19.
+2. **Traced back to:** <!-- where that came from, e.g. a function, a request in the Network tab, a server log -->
+Searched up "Best:" and saw that there was a for loop that was calculating the best score variable.
+4. **Buggy code:** <!-- the file, function and line where the trace ended -->
+The logic was wrong and the inequality needed to be flipped in order to calculate the top score accurately.
+
+<!-- It is okay to use your judgement here in limiting the number of traceback steps. We want to understand your 
+    reasoning for how you discovered where the bug was -->
+
+### Confirming the fix
+
+<!-- How did you confirm the problem is gone? -->
+I saved the change and refreshed the game. The stats appeared with Best: 19, which was accurate.
